@@ -8,10 +8,11 @@ import PrinterMachine from "../PrinterMachine";
 
 interface ResultScreenProps {
   photo: string;
+  copies: number;
   onRestart: () => void;
 }
 
-export default function ResultScreen({ photo, onRestart }: ResultScreenProps) {
+export default function ResultScreen({ photo, copies, onRestart }: ResultScreenProps) {
   const [out, setOut] = useState(false);
   const [seconds, setSeconds] = useState(RESULT_IDLE_SECONDS);
   const onRestartRef = useRef(onRestart);
@@ -39,7 +40,11 @@ export default function ResultScreen({ photo, onRestart }: ResultScreenProps) {
   return (
     <BoothLayout
       title="완성! 사진이 나왔어요 🎉"
-      description="프린터에서 사진을 가져가 주세요"
+      description={
+        copies > 1
+          ? `프린터에서 사진 ${copies}장을 모두 가져가 주세요`
+          : "프린터에서 사진을 가져가 주세요"
+      }
       footer={
         <>
           <Button size="lg" className="w-full max-w-md" onClick={onRestart}>

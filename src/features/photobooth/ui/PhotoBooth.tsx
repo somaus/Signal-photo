@@ -24,6 +24,7 @@ export default function PhotoBooth() {
   const [filter, setFilter] = useState<Filter>(FILTERS[0]);
   const [shot, setShot] = useState<string | null>(null);
   const [printed, setPrinted] = useState<string | null>(null);
+  const [copies, setCopies] = useState(1);
 
   const { start: startCamera, stop: stopCamera } = camera;
 
@@ -36,6 +37,7 @@ export default function PhotoBooth() {
     stopCamera();
     setShot(null);
     setPrinted(null);
+    setCopies(1);
     setFrame(FRAMES[0]);
     setFilter(FILTERS[0]);
     setStep("start");
@@ -93,6 +95,8 @@ export default function PhotoBooth() {
           shot={shot}
           frame={frame}
           filter={filter}
+          copies={copies}
+          onCopiesChange={setCopies}
           onRetake={() => {
             setShot(null);
             setStep("capture");
@@ -107,9 +111,13 @@ export default function PhotoBooth() {
       ) : null;
 
     case "printing":
-      return printed ? <PrintingScreen photo={printed} onDone={() => setStep("result")} /> : null;
+      return printed ? (
+        <PrintingScreen photo={printed} copies={copies} onDone={() => setStep("result")} />
+      ) : null;
 
     case "result":
-      return printed ? <ResultScreen photo={printed} onRestart={handleRestart} /> : null;
+      return printed ? (
+        <ResultScreen photo={printed} copies={copies} onRestart={handleRestart} />
+      ) : null;
   }
 }

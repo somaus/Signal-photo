@@ -8,6 +8,7 @@ import PrinterMachine from "../PrinterMachine";
 
 interface PrintingScreenProps {
   photo: string;
+  copies: number;
   onDone: () => void;
 }
 
@@ -17,7 +18,9 @@ const MESSAGES = [
   { until: 1.01, text: "한 장 한 장 인화하는 중이에요" },
 ];
 
-export default function PrintingScreen({ photo, onDone }: PrintingScreenProps) {
+export default function PrintingScreen({ photo, copies, onDone }: PrintingScreenProps) {
+  // 장 수만큼 인화 시간이 늘어난다
+  const [duration] = useState(() => PRINT_DURATION_MS * Math.max(1, copies));
   const [progress, setProgress] = useState(0);
   const printedRef = useRef(false);
   const onDoneRef = useRef(onDone);
@@ -30,14 +33,14 @@ export default function PrintingScreen({ photo, onDone }: PrintingScreenProps) {
   useEffect(() => {
     if (printedRef.current) return;
     printedRef.current = true;
-    void printImage(photo);
-  }, [photo]);
+    void printImage(photo, copies);
+  }, [photo, copies]);
 
   // 진행률 + 완료 처리
   useEffect(() => {
     const startedAt = Date.now();
     const timer = window.setInterval(() => {
-      const ratio = Math.min(1, (Date.now() - startedAt) / PRINT_DURATION_MS);
+      const ratio = Math.min(1, (Date.now() - startedAt) / duration);
       setProgress(ratio);
       if (ratio >= 1) {
         window.clearInterval(timer);
@@ -45,13 +48,18 @@ export default function PrintingScreen({ photo, onDone }: PrintingScreenProps) {
       }
     }, 200);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [duration]);
 
   const message = (MESSAGES.find((m) => progress < m.until) ?? MESSAGES[MESSAGES.length - 1]).text;
-  const remaining = Math.max(0, Math.ceil(((1 - progress) * PRINT_DURATION_MS) / 1000));
+  const remaining = Math.max(0, Math.ceil(((1 - progress) * duration) / 1000));
+  // 현재 인화 중인 장 (1부터)
+  const current = Math.min(copies, Math.floor(progress * copies) + 1);
 
   return (
-    <BoothLayout title="사진을 인쇄하고 있어요" description="잠시만 기다려 주세요. 곧 나와요!">
+    <BoothLayout
+      title={copies > 1 ? `사진 ${copies}장을 인쇄하고 있어요` : "사진을 인쇄하고 있어요"}
+      description="잠시만 기다려 주세요. 곧 나와요!"
+    >
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-6">
         <PrinterMachine photo={photo} progress={progress} durationMs={400} developing />
 
@@ -63,7 +71,9 @@ export default function PrintingScreen({ photo, onDone }: PrintingScreenProps) {
             />
           </div>
           <p className="text-body-1 text-primary-600 mt-3 text-center font-semibold">{message}</p>
-          <p className="text-small text-gray-650 mt-0.5 text-center">약 {remaining}초 남았어요</p>
+          <p className="text-small text-gray-650 mt-0.5 text-center">
+            {copies > 1 && `${current} / ${copies}장 · `}약 {remaining}초 남았어요
+          </p>
         </div>
       </div>
     </BoothLayout>

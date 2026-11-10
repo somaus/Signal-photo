@@ -13,5 +13,8 @@ export const PRINT_ENABLED = process.env.NEXT_PUBLIC_PRINT_ENABLED !== "false";
  */
 export const PRINT_PAGE_SIZE = process.env.NEXT_PUBLIC_PRINT_PAGE_SIZE ?? "landscape";
 
+/** 한 번에 선택할 수 있는 최대 인쇄 매수 */
+export const PRINT_MAX_COPIES = Math.max(1, Number(process.env.NEXT_PUBLIC_PRINT_MAX_COPIES ?? 4));
+
 /** 결과 화면에서 처음으로 자동 복귀까지 걸리는 시간(초) */
 export const RESULT_IDLE_SECONDS = Number(process.env.NEXT_PUBLIC_RESULT_IDLE_SECONDS ?? 30);

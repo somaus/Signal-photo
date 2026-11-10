@@ -3,14 +3,18 @@
 import { useEffect, useState } from "react";
 import Button from "@/shared/ui/Button";
 import { composePhoto } from "../../lib/compose";
+import { PRINT_MAX_COPIES } from "../../model/config";
 import type { Filter, Frame } from "../../model/types";
 import BoothLayout from "../BoothLayout";
+import CopiesStepper from "../CopiesStepper";
 import StageBox from "../StageBox";
 
 interface ReviewScreenProps {
   shot: string;
   frame: Frame;
   filter: Filter;
+  copies: number;
+  onCopiesChange: (copies: number) => void;
   onRetake: () => void;
   onConfirm: (composed: string) => void;
 }
@@ -19,6 +23,8 @@ export default function ReviewScreen({
   shot,
   frame,
   filter,
+  copies,
+  onCopiesChange,
   onRetake,
   onConfirm,
 }: ReviewScreenProps) {
@@ -45,20 +51,26 @@ export default function ReviewScreen({
       title="사진이 마음에 드시나요?"
       description="마음에 들지 않으면 다시 찍을 수 있어요"
       footer={
-        <div className="flex w-full max-w-xl flex-col gap-3 sm:flex-row">
-          <Button size="lg" variant="outline" className="flex-1" onClick={onRetake}>
-            <RetakeIcon />
-            다시 찍기
-          </Button>
-          <Button
-            size="lg"
-            className="flex-[1.4]"
-            disabled={!composed}
-            onClick={() => composed && onConfirm(composed)}
-          >
-            <PrintIcon />이 사진으로 인쇄하기
-          </Button>
-        </div>
+        <>
+          {PRINT_MAX_COPIES > 1 && (
+            <CopiesStepper value={copies} max={PRINT_MAX_COPIES} onChange={onCopiesChange} />
+          )}
+          <div className="flex w-full max-w-xl flex-col gap-3 sm:flex-row">
+            <Button size="lg" variant="outline" className="flex-1" onClick={onRetake}>
+              <RetakeIcon />
+              다시 찍기
+            </Button>
+            <Button
+              size="lg"
+              className="flex-[1.4]"
+              disabled={!composed}
+              onClick={() => composed && onConfirm(composed)}
+            >
+              <PrintIcon />
+              {copies}장 인쇄하기
+            </Button>
+          </div>
+        </>
       }
     >
       <StageBox>
