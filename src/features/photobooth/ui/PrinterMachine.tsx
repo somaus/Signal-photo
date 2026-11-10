@@ -1,3 +1,5 @@
+import { CANVAS_RATIO } from "../model/frames";
+
 interface PrinterMachineProps {
   /** 합성 완료된 인쇄 이미지 (data URL) */
   photo: string;
@@ -11,8 +13,8 @@ interface PrinterMachineProps {
 }
 
 /**
- * 인생네컷 기계처럼 슬롯에서 사진이 아래로 출력되는 일러스트.
- * 폭(W) 기준 비율: 본체 0~0.5W, 슬롯 0.5W, 용지 폭 0.66W / 높이 0.99W.
+ * 인생네컷 기계처럼 슬롯에서 가로형 사진이 아래로 출력되는 일러스트.
+ * 폭(W) 기준: 본체 높이 0.3W, 용지 폭 0.8W (가로형 3:2 → 높이 약 0.53W).
  */
 export default function PrinterMachine({
   photo,
@@ -24,19 +26,20 @@ export default function PrinterMachine({
   const p = Math.min(1, Math.max(0, progress));
   return (
     <div
-      className={`@container relative aspect-100/150 w-[min(86vw,38dvh)] ${className}`}
+      className={`@container relative aspect-100/86 w-[min(86vw,58dvh)] ${className}`}
       aria-hidden
     >
       {/* 용지: 슬롯 아래 영역에서만 보이도록 클리핑 */}
-      <div className="absolute inset-x-0 top-[33.3%] bottom-0 overflow-hidden">
+      <div className="absolute inset-x-0 top-[32%] bottom-0 overflow-hidden">
         <div
-          className="absolute top-0 left-[17%] aspect-2/3 w-[66%]"
+          className="absolute top-0 left-[10%] w-[80%]"
           style={{
+            aspectRatio: CANVAS_RATIO,
             transform: `translateY(${-(1 - p) * 100}%)`,
             transition: `transform ${durationMs}ms linear`,
           }}
         >
-          <div className="size-full overflow-hidden rounded-[1.2cqw] bg-white shadow-2xl ring-1 ring-black/5">
+          <div className="size-full overflow-hidden rounded-[1cqw] bg-white shadow-2xl ring-1 ring-black/5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={photo}
@@ -54,15 +57,15 @@ export default function PrinterMachine({
       </div>
 
       {/* 본체 */}
-      <div className="from-primary-500 to-primary-700 absolute inset-x-0 top-0 h-[33.3%] rounded-[5cqw] bg-linear-to-b shadow-2xl">
-        <div className="absolute inset-x-0 top-0 h-1/2 rounded-t-[5cqw] bg-linear-to-b from-white/20 to-transparent" />
-        <div className="absolute top-[14%] left-[8%] flex items-center gap-[2cqw]">
-          <span className="bg-secondary-300 shadow-secondary-300 animate-blink size-[2.4cqw] rounded-full shadow-[0_0_8px]" />
-          <span className="text-[4cqw] font-bold tracking-[0.8cqw] text-white/90">SIGNAL</span>
+      <div className="from-primary-500 to-primary-700 absolute inset-x-0 top-0 h-[35%] rounded-[4cqw] bg-linear-to-b shadow-2xl">
+        <div className="absolute inset-x-0 top-0 h-1/2 rounded-t-[4cqw] bg-linear-to-b from-white/20 to-transparent" />
+        <div className="absolute top-[16%] left-[6%] flex items-center gap-[1.6cqw]">
+          <span className="bg-secondary-300 shadow-secondary-300 animate-blink size-[2cqw] rounded-full shadow-[0_0_8px]" />
+          <span className="text-[3.4cqw] font-bold tracking-[0.7cqw] text-white/90">SIGNAL</span>
         </div>
-        <div className="bg-primary-800/60 absolute top-[14%] right-[8%] h-[3.4cqw] w-[14cqw] rounded-full" />
+        <div className="bg-primary-800/60 absolute top-[16%] right-[6%] h-[2.8cqw] w-[12cqw] rounded-full" />
         {/* 배출 슬롯 */}
-        <div className="bg-primary-900 absolute inset-x-[8%] bottom-[8%] h-[3.6cqw] rounded-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]" />
+        <div className="bg-primary-900 absolute inset-x-[7%] bottom-[10%] h-[3cqw] rounded-full shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]" />
       </div>
     </div>
   );

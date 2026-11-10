@@ -12,14 +12,11 @@ export interface Frame {
   id: string;
   name: string;
   description: string;
-  /** 위 → 아래 그라데이션 배경색 (오버레이 PNG 가 없을 때의 기본 배경) */
-  colors: [string, string];
-  /** 하단 캡션 글자색 */
-  textColor: string;
-  /** 하단 "SIGNAL" 캡션을 그릴지 여부. 디자인된 오버레이를 쓰면 false */
-  caption: boolean;
-  /** 1200x1800 투명 PNG. 사진 영역은 뚫려 있어야 함. 예: "/frames/signal-01.png" */
-  overlaySrc?: string;
+  /** 사진 칸이 투명하게 뚫린 1800x1200 PNG. scripts/make-frames.py 로 생성 */
+  overlaySrc: string;
+  /** 오버레이 아래 깔리는 배경색 */
+  background: string;
+  /** 사진이 들어갈 영역. make-frames.py 출력값을 그대로 붙여넣는다 */
   slot: FrameSlot;
 }
 

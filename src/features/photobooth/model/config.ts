@@ -7,12 +7,9 @@ export const PRINT_DURATION_MS = Number(process.env.NEXT_PUBLIC_PRINT_DURATION_M
 /** false 면 window.print() 를 호출하지 않는다 (개발용) */
 export const PRINT_ENABLED = process.env.NEXT_PUBLIC_PRINT_ENABLED !== "false";
 
-/** 한 용지에 가로로 나란히 인쇄할 장 수 */
-export const PRINT_COPIES = Math.max(1, Number(process.env.NEXT_PUBLIC_PRINT_COPIES ?? 2));
-
 /**
- * 인쇄 용지 크기 (CSS @page size 값). 예: "landscape"(프린터 기본 용지 가로), "A4 landscape", "8in 6in"
- * 시트는 용지 안에 비율을 유지한 채 꽉 차게 들어간다.
+ * 인쇄 용지 크기 (CSS @page size 값). 예: "landscape"(프린터 기본 용지 가로), "6in 4in"
+ * 사진은 용지 안에 비율을 유지한 채 꽉 차게(페이지에 맞게 축소) 들어간다.
  */
 export const PRINT_PAGE_SIZE = process.env.NEXT_PUBLIC_PRINT_PAGE_SIZE ?? "landscape";
 
